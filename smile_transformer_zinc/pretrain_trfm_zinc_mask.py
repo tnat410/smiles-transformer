@@ -39,6 +39,7 @@ class TrfmSeq2seq(nn.Module):
     def __init__(self, in_size, hidden_size, out_size, n_layers, dropout=0.1):
         super(TrfmSeq2seq, self).__init__()
         self.src_mask = None
+        self.tgt_mask = None       
         self.in_size = in_size
         self.hidden_size = hidden_size
         self.embed = nn.Embedding(in_size, hidden_size,padding_idx=PAD)
@@ -60,12 +61,17 @@ class TrfmSeq2seq(nn.Module):
             if self.src_mask is None or self.src_mask.size(0) != len(src):      
                 mask = self._generate_square_subsequent_mask(len(src)).to(device)
                 self.src_mask = mask
+
+            if self.tgt_mask is None or self.tgt_mask.size(0) != len(src):      
+                mask = self._generate_square_subsequent_mask(len(src)).to(device)
+                self.tgt_mask = mask                
         else:
             self.src_mask = None
+            self.tgt_mask = None
             
         embedded = self.embed(src)  # (T,B,H)
         embedded += self.pe(embedded) # (T,B,H)
-        hidden = self.trfm(embedded, embedded, src_mask=self.src_mask) # (T,B,H)
+        hidden = self.trfm(embedded, embedded, src_mask=self.src_mask, tgt_mask=self.tgt_mask) # (T,B,H)
         out = self.out(hidden) # (T,B,V)
         out = F.log_softmax(out, dim=2) # (T,B,V)
         return out # (T,B,V)
