@@ -162,7 +162,7 @@ def read_smiles_csv(path):
 exp = "transformer"
 
 vocab_file= 'vocab_train.txt'
-fdir='/g/g92/tran71/tran71/transformer/trans_res/'
+fdir='/transformer/trans_results/'
 
 get_smiles_from_lbann_tensors(fdir,vocab_file)
 
