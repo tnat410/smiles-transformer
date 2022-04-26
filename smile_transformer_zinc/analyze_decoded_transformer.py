@@ -57,7 +57,6 @@ def get_smiles_from_lbann_tensors(fdir, vocab_path):
   # Second input files 
   ####################
 
-
   input_files = glob.glob(fdir+"*_pred_seq.csv")
 
   ins = np.loadtxt(input_files[0], delimiter=",")
