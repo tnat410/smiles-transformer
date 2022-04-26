@@ -11,16 +11,6 @@ from rdkit import RDLogger
 
 #from moses.script_utils import  read_smiles_csv
 
-def vocab_load(vocab_file):
- 
-  vocab = {}
-  with open(vocab_file) as f:
-    for line in f:
-      (k,v) = line.split()
-      vocab[k] = int(v)
-
-  return vocab
-  
 def detokenize(inp,vocab):
   output = ""
   for i in inp:
@@ -54,17 +44,12 @@ def get_smiles_from_lbann_tensors(fdir, vocab_path):
   num_samples = ins.shape[0]
   print("Num samples ", num_samples)
 
-
   vocab = pd.read_csv(vocab_file, delimiter=" ", header=None).to_dict()[0]
   vocab = dict([(v,k) for k,v in vocab.items()])
 
-
-
   samples = [detokenize(i_x,vocab) for i_x in ins[:,0:]] 
-
   samples = pd.DataFrame(samples, columns=['SMILES'])
   
-
   print("Save gt files to " , "gt_"+"smiles.txt")
   samples.to_csv("gt_"+"smiles.txt", index=False)
 
@@ -89,20 +74,13 @@ def get_smiles_from_lbann_tensors(fdir, vocab_path):
   vocab = pd.read_csv(vocab_file, delimiter=" ", header=None).to_dict()[0]
   vocab = dict([(v,k) for k,v in vocab.items()])
 
-
-
   samples = [detokenize(i_x,vocab) for i_x in ins[:,0:]] 
-
-
   samples = pd.DataFrame(samples, columns=['SMILES'])
   
   print("Save gt files to " , "pred_"+"smiles.txt")
   samples.to_csv("pred_"+"smiles.txt", index=False)
-          
-
-
-
-
+        
+   
 def compare_decoded_to_original_smiles(orig_smiles, decoded_smiles, output_file=None):
     """
     Compare decoded to original SMILES strings and output a table of Tanimoto distances, along with
@@ -168,19 +146,15 @@ def compare_decoded_to_original_smiles(orig_smiles, decoded_smiles, output_file=
     valid_tani_dist = [ t for t in tani_dist if t >= 0 ] 
     print("Average tanimoto ", np.mean(np.array(valid_tani_dist)))
     
-
     if output_file is not None:
         output_columns = ['original', 'decoded', 'is_valid', 'is_same', 'smile_accuracy','tanimoto_distance','total_avg_accuracy']
         res_df.to_csv(output_file, index=False, columns=output_columns)
     return(res_df)
 
-
 def read_smiles_csv(path):
     return pd.read_csv(path,
                        usecols=['SMILES'],
                        squeeze=True).astype(str).tolist()
-
-
 
 #sequence_length = 102 #Max sequence lenght use in LBANN training (100+bos+eos)
 #zdim = 216 #latent space dimension
@@ -201,16 +175,3 @@ print("Input/pred SMILES file sizes ", len(orig_file), " ", len(pred_file))
 
 compare_decoded_to_original_smiles(orig_file, pred_file, diff_file)
 print("Input/pred SMILES diff file saved to", diff_file)
-
-
-
-
-
-
-
-
-
-
-
-
-
